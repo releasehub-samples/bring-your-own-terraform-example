@@ -1,0 +1,34 @@
+---
+defaults:
+# AWS region that Terraform in which will create infrastructure
+- key: TF_VAR_AWS_DEFAULT_REGION
+  value: "us-west-2"
+
+# AWS Role that Terraform will assume to perform deployments.
+# This is created *outside* of the ephemeral environments and should be scoped to
+# only allow Terraform to create/update/delete the resources that are needed for
+# your template.
+- key: TF_VAR_DEPLOYMENT_ROLE_ARN      
+  value: "arn:aws:iam::234760159927:role/release/release_demo_role_for_terraform_service"
+
+# AWS S3 bucket that Terraform will use to store state.
+# This is a pre-existing bucket created *outside* of the ephemeral environment
+# because we want to use the same bucket for multiple state files. AWS limits
+# the number of buckets an account can have and we don't want to run into that
+# limit if we have many ephemeral environments: 
+- key: TF_VAR_BACKEND_BUCKET
+  value: release-demo-terraform-state-234760159927
+
+# AWS region of the bucket Terraform will use to store state
+- key: TF_VAR_BACKEND_REGION
+  value: us-west-2
+
+mapping:
+  TF_VAR_RELEASE_ACCOUNT_ID: RELEASE_ACCOUNT_ID
+  TF_VAR_RELEASE_APP_NAME: RELEASE_APP_NAME
+  TF_VAR_RELEASE_ENV_ID: RELEASE_ENV_ID
+  TF_VAR_RELEASE_BRANCH_NAME: RELEASE_BRANCH_NAME
+  TF_VAR_RELEASE_COMMIT_SHORT: RELEASE_COMMIT_SHORT
+  TF_VAR_RELEASE_COMMIT_SHA: RELEASE_COMMIT_SHA
+  TF_VAR_RELEASE_ENV: RELEASE_ENV
+

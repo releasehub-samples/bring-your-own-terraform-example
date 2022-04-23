@@ -1,0 +1,89 @@
+---
+# Pro-tip: do not user underscores at production. 
+
+app: terraform-s3-backend               # this will auto-change to whatever you name set when first creating your Release Application in the UI; if your account has GitOps enabled, you instead need to make sure that this value *matches* the name you select.
+context: hubofhubs-release-us-west-2    # name of EKS cluster in your account that you previously created with Release
+domain: release.hubofhubs.com
+auto_deploy: true
+repo_name: releasehub-samples/release-with-terraform
+tracking_branch: main
+
+# Builds are where you are can optionally tell us to buily your Dockerfile(s)
+# and push the image artifact to AWS ECR or Google GCR. The name that you give
+# the service will later be part of the string you can use to reference the
+# build when defining a service. You can also reference any existing image
+# in your private ECR, GCR, Artifactory, or DockerHub repo, or public images
+# in the same.
+builds:
+# When we do an image build for you, you can reference the image via the following
+# string in our services: "{source_org_name}/{source_repo_name}/{build_name}"
+# in other words: "releasehub-samples/release-with-terraform/terraform"
+- name: terraform                     # any name you want
+  context: examples/aws-s3-backend    # context = folder
+  dockerfile: Dockerfile
+
+# "services" are those where you define which container images you will
+# later run as either a long-lived service (e.g. NodeJS frontend) or as 
+# a one-time job:
+services:
+  # Uses the image we built above:
+- name: terraform
+  image: releasehub-samples/release-with-terraform/terraform
+  has_repo: true
+
+# Allows you to specify overrides for other properties in this template
+# based on your environment type (not used in this demo):
+environment_templates:
+- name: ephemeral
+- name: permanent
+
+# These are defaults for K8s containers that we spin up for you and only apply
+# if you use our "services" abstraction. You can override these with the templates
+# above and/or on a per-service basis:
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+
+# You can use any service from above to define a"job", below:
+Jobs:
+- name: terraform-apply       # the job name doesn't matter, pick what you want
+  from_services: terraform    # name of service from above
+  command:                    # this is just overriding the entry point of your / our environment
+  - "./bin/apply.sh"          
+
+- name: terraform-destroy
+  from_services: terraform
+  command:
+  - "./bin/destroy.sh"
+
+
+# Above, we define our environment components. 
+# We use the workflows below to tell Release when
+# to create our services or tear them down.
+workflows:
+
+# Runs when environment first created
+- name: setup       
+  parallelize:
+  - step: deploy
+    tasks:
+    - services.all
+    - jobs.terraform-apply
+
+# Runs when commit is pushed to a repo, or if you disable auto-update on commit, when you trigger an update via UI & CLI
+- name: patch
+  parallelize:
+  - step: patch
+    tasks:
+    - services.all            
+    - jobs.terraform-apply
+
+- name: teardown
+  order_from:
+  - jobs.terraform-destroy      
+  - release.remove_environment
