@@ -1,11 +1,9 @@
 ---
-# Pro-tip: do not user underscores at production. 
-
-app: terraform-s3-backend               # this will auto-change to whatever you name set when first creating your Release Application in the UI; if your account has GitOps enabled, you instead need to make sure that this value *matches* the name you select.
-context: hubofhubs-release-us-west-2    # name of EKS cluster in your account that you previously created with Release
-domain: release.hubofhubs.com
+app: terraform-s3-backend              # this will auto-change to whatever you name set when first creating your Release Application in the UI; if your account has GitOps enabled, you instead need to make sure that this value *matches* the name you select.
+context: release-customer-us-west-2    # If using free trial, this must be "release-customer-us-west-2". Otherwise, set it to the name of the EKS cluster that you've created to run in your account.
+domain: rls.sh                         # If using free trial, this must be "rls.sh". Otherwise, set to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
 auto_deploy: true
-repo_name: releasehub-samples/release-with-terraform
+repo_name: releasehub-samples/release-with-terraform   # Change this to match your forked repository
 tracking_branch: main
 
 # Builds are where you are can optionally tell us to buily your Dockerfile(s)
@@ -50,7 +48,7 @@ resources:
   replicas: 1
 
 # You can use any service from above to define a"job", below:
-Jobs:
+jobs:
 - name: terraform-apply       # the job name doesn't matter, pick what you want
   from_services: terraform    # name of service from above
   command:                    # this is just overriding the entry point of your / our environment

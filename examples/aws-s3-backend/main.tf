@@ -8,11 +8,19 @@ terraform {
       source = "hashicorp/time"
       version = "0.7.2"
     }
+    random = {
+      source = "hashicorp/random"
+      version = "3.0.0"
+    }
   }
 
   backend "s3" {
     encrypt = true
   }
+}
+
+provider "random" {
+  # Configuration options
 }
 
 provider "aws" {
@@ -28,6 +36,7 @@ provider "aws" {
 	  tags = {
       purpose   = "Demo - Terraform with Release"
       terraform_apply_time = time_static.timestamp.rfc3339
+      release_managed      = "true"
       release_application  = var.RELEASE_APP_NAME
       release_environment  = var.RELEASE_ENV_ID
       release_branch       = var.RELEASE_BRANCH_NAME
@@ -59,7 +68,7 @@ locals {
   # this string for things like annotations / labels / etc. in your preferred
   # logging and metrics solution, as columns or attributes in a database, or as 
   # part of a custom reporting solution.
-  unique_resource_namespace = "${var.RELEASE_APP_NAME}-${var.RELEASE_ENV_ID}"
+  unique_resource_namespace = "release-${var.RELEASE_APP_NAME}-${var.RELEASE_ENV_ID}"
 }
 
 # Lambda function that retrieves data from a 3rd-party API:
@@ -70,6 +79,10 @@ module "lambda_function" {
   handler       = "index.handler"
   runtime       = "nodejs14.x"
   source_path   = "./lambda"
+  policy_path   = "/release/"
+  role_path     = "/release/"
+  role_name = "${local.unique_resource_namespace}-lambda"
+  cloudwatch_logs_retention_in_days = 30
 }
 
 # Used to create a timestamp used in AWS resource tags but which does *not* 
@@ -89,7 +102,7 @@ output "lambda_function_arn" {
   value = module.lambda_function.lambda_function_arn
 }
 
-# Below, we write our ephemeral Lambda's function name to AWS Parameter Store. This is
+# We write our ephemeral Lambda's function name to AWS Parameter Store. This is
 # just an example of an alternate way of sharing ephemeral Terraform outputs outside of
 # your Release environment.
 resource "aws_ssm_parameter" "lambda_function_arn" {
