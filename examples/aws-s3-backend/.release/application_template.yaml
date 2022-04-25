@@ -1,7 +1,7 @@
 ---
-app: terraform-s3-backend              # this will auto-change to whatever you name set when first creating your Release Application in the UI; if your account has GitOps enabled, you instead need to make sure that this value *matches* the name you select.
-context: release-customer-us-west-2    # If using free trial, this must be "release-customer-us-west-2". Otherwise, set it to the name of the EKS cluster that you've created to run in your account.
-domain: rls.sh                         # If using free trial, this must be "rls.sh". Otherwise, set to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
+app: terraform-s3-backend        # Update to match the name selected when creating your application
+context: YOUR_EKS_CLUSTER        # Update this field to match one of your Release-managed EKS clusters
+domain: YOUR_RELEASE_SUBDOMAIN   # Update to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
 auto_deploy: true
 repo_name: releasehub-samples/release-with-terraform   # Change this to match your forked repository
 tracking_branch: main

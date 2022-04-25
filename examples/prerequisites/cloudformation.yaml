@@ -22,11 +22,11 @@ Resources:
         - Key: purpose
           Value: Release demo of running custom Terraform
 
-  RootRole:
+  ReleaseTerraformRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: release_demo_role_for_terraform_job
-      Path: /release/
+      RoleName: "demo_role_for_terraform_job"
+      Path: "/release/"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -36,7 +36,6 @@ Resources:
                 - !Sub "arn:aws:iam::${AWS::AccountId}:root"     
             Action:
               - 'sts:AssumeRole'
-      Path: /
       Policies:
         - PolicyName: root
           PolicyDocument:

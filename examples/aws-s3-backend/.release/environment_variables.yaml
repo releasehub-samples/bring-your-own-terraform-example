@@ -10,7 +10,7 @@ defaults:
 # Note - if you create a role,it must have a path prefix of /release/, as in 
 # "/release/MY_ROLE_123". 
 - key: TF_VAR_DEPLOYMENT_ROLE_NAME     
-  value: "release/release_demo_role_for_terraform_job"
+  value: "release/demo_role_for_terraform_job"
 
 # This should be the prefix of the bucket to hold your Terraform state that defined in 
 # examples/prerequisites/cloudformation.yaml.
