@@ -120,7 +120,6 @@ Resources:
                 - ssm:AddTagsToResource
                 - ssm:RemoveTagsFromResource
                 Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/release/*"
-              
               - Effect: Allow
                 Action:
                 - s3:ListBucket
