@@ -4,10 +4,6 @@ terraform {
       source = "hashicorp/aws"
       version = "4.8.0"
     }
-    time = {
-      source = "hashicorp/time"
-      version = "0.7.2"
-    }
     random = {
       source = "hashicorp/random"
       version = "3.0.0"
@@ -35,7 +31,6 @@ provider "aws" {
   default_tags {
 	  tags = {
       purpose   = "Demo - Terraform with Release"
-      terraform_apply_time = time_static.timestamp.rfc3339
       release_managed      = "true"
       release_application  = var.RELEASE_APP_NAME
       release_environment  = var.RELEASE_ENV_ID
@@ -84,12 +79,6 @@ module "lambda_function" {
   role_name = "${local.unique_resource_namespace}-lambda"
   cloudwatch_logs_retention_in_days = 30
 }
-
-# Used to create a timestamp used in AWS resource tags but which does *not* 
-# change from the last 'terraform apply' unless other resources have changed
-# in the template (to avoid unnecessary Terraform updates.
-resource "time_static" "timestamp" {}
-
 
 # Terraform's "terraform_remote_state" data source allows one Terraform configuration
 # to read the output of a remote state file. So, if you need to share state between
