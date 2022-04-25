@@ -1,11 +1,9 @@
 ---
-# Pro-tip: do not user underscores at production. 
-
-app: terraform-s3-backend               # this will auto-change to whatever you name set when first creating your Release Application in the UI; if your account has GitOps enabled, you instead need to make sure that this value *matches* the name you select.
-context: hubofhubs-release-us-west-2    # name of EKS cluster in your account that you previously created with Release
-domain: release.hubofhubs.com
+app: terraform-s3-backend        # Update to match the name selected when creating your application
+context: YOUR_EKS_CLUSTER        # Update this field to match one of your Release-managed EKS clusters
+domain: YOUR_RELEASE_SUBDOMAIN   # Update to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
 auto_deploy: true
-repo_name: releasehub-samples/release-with-terraform
+repo_name: releasehub-samples/release-with-terraform   # Change this to match your forked repository
 tracking_branch: main
 
 # Builds are where you are can optionally tell us to buily your Dockerfile(s)
@@ -22,11 +20,10 @@ builds:
   context: examples/aws-s3-backend    # context = folder
   dockerfile: Dockerfile
 
-# "services" are those where you define which container images you will
-# later run as either a long-lived service (e.g. NodeJS frontend) or as 
-# a one-time job:
+# "services" are those where you define which container images you want
+# to run as either a long-lived service (e.g. NodeJS frontend) or as 
+# a one-time job.
 services:
-  # Uses the image we built above:
 - name: terraform
   image: releasehub-samples/release-with-terraform/terraform
   has_repo: true
@@ -49,17 +46,21 @@ resources:
     requests: 100Mi
   replicas: 1
 
-# You can use any service from above to define a"job", below:
-Jobs:
-- name: terraform-apply       # the job name doesn't matter, pick what you want
-  from_services: terraform    # name of service from above
-  command:                    # this is just overriding the entry point of your / our environment
-  - "./bin/apply.sh"          
+# Release jobs can derive their image from either a Release service with "from_services", 
+# or can reference an image directly. In our case, we'll re-use our service definition
+# above:
+jobs:
+- name: terraform-apply
+  from_services: terraform 
+  command:                   
+  - "./bin/apply.sh"   
+  completed_timeout: 600       
 
 - name: terraform-destroy
   from_services: terraform
   command:
   - "./bin/destroy.sh"
+  completed_timeout: 600
 
 
 # Above, we define our environment components. 
@@ -72,10 +73,11 @@ workflows:
   parallelize:
   - step: deploy
     tasks:
-    - services.all
-    - jobs.terraform-apply
+    - services.terraform        # this runs an identical container to that used by the job below, with the only difference being this service's Dockerfile entrypoint is a sleep command that keeps it running. This is handy for opening a remote session to test or debug manually from within the context of your environment's namespace.
+    - jobs.terraform-apply 
 
-# Runs when commit is pushed to a repo, or if you disable auto-update on commit, when you trigger an update via UI & CLI
+# Runs when commit is pushed to a repo, or if you disable auto-update
+# on commit, when you trigger an update via UI & CLI
 - name: patch
   parallelize:
   - step: patch

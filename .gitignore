@@ -1,5 +1,5 @@
 # not ready to share yet
-examples/aws-cloud-backend
+examples/aws-cloud-backend/*
 !examples/aws-cloud-backend/README.md
 
 # Contains API token for Terraform Cloud examples

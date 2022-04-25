@@ -5,22 +5,20 @@ defaults:
   value: "us-west-2"
 
 # AWS Role that Terraform will assume to perform deployments.
-# This is created *outside* of the ephemeral environments and should be scoped to
-# only allow Terraform to create/update/delete the resources that are needed for
-# your template.
-- key: TF_VAR_DEPLOYMENT_ROLE_ARN      
-  value: "arn:aws:iam::234760159927:role/release/release_demo_role_for_terraform_service"
+# This role is created when you run ./setup.sh in the root of this project repo
+# as part of the prerequisite steps to follow before creating this app in Release.
+# Note - if you create a role,it must have a path prefix of /release/, as in 
+# "/release/MY_ROLE_123". 
+- key: TERRAFORM_DEPLOYMENT_ROLE_NAME     
+  value: "release/demo_role_for_terraform_job"
 
-# AWS S3 bucket that Terraform will use to store state.
-# This is a pre-existing bucket created *outside* of the ephemeral environment
-# because we want to use the same bucket for multiple state files. AWS limits
-# the number of buckets an account can have and we don't want to run into that
-# limit if we have many ephemeral environments: 
-- key: TF_VAR_BACKEND_BUCKET
-  value: release-demo-terraform-state-234760159927
+# This should be the prefix of the bucket to hold your Terraform state that defined in 
+# examples/prerequisites/cloudformation.yaml.
+- key: TERRAFORM_STATE_BUCKET_NAME_PREFIX
+  value: release-demo-of-terraform
 
 # AWS region of the bucket Terraform will use to store state
-- key: TF_VAR_BACKEND_REGION
+- key: TERRAFORM_STATE_BUCKET_REGION
   value: us-west-2
 
 mapping:
