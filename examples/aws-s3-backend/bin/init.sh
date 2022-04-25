@@ -2,7 +2,7 @@
 set -e
 
 ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-TF_VAR_DEPLOYMENT_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/release/$TF_VAR_DEPLOYMENT_ROLE_NAME"
+TF_VAR_DEPLOYMENT_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/$TF_VAR_DEPLOYMENT_ROLE_NAME"
 
 # Assume the role needed to read/write backend state and deploy stuff with terraform:
 aws_credentials=$(aws sts assume-role --role-arn $TF_VAR_DEPLOYMENT_ROLE_ARN --role-session-name "release-$TF_VAR_RELEASE_APP_NAME-$TF_VAR_RELEASE_ENV_ID-terraform")
