@@ -3,8 +3,10 @@ set -e
 
 echo "[BEGIN TERRAFORM INIT]"
 
-ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-DEPLOYMENT_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/$TERRAFORM_DEPLOYMENT_ROLE_NAME"
+export ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+echo "AWS Account IDL $ACCOUNT_ID"
+
+export DEPLOYMENT_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/$TERRAFORM_DEPLOYMENT_ROLE_NAME"
 echo "Assuming role $DEPLOYMENT_ROLE_ARN..."
 # Assume the role needed to read/write backend state and deploy stuff with terraform:
 aws_credentials=$(aws sts assume-role --role-arn $DEPLOYMENT_ROLE_ARN --role-session-name "release-$RELEASE_APP_NAME-$RELEASE_ENV_ID-terraform")
