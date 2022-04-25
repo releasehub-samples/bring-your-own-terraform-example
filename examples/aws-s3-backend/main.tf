@@ -63,12 +63,14 @@ locals {
   # this string for things like annotations / labels / etc. in your preferred
   # logging and metrics solution, as columns or attributes in a database, or as 
   # part of a custom reporting solution.
-  unique_resource_namespace = "release-${var.RELEASE_APP_NAME}-${var.RELEASE_ENV_ID}"
+  unique_prefix_with_namespace = "release-${var.RELEASE_APP_NAME}-${var.RELEASE_ENV_ID}"
+  unique_prefix                = "${var.RELEASE_APP_NAME}-${var.RELEASE_ENV_ID}"
+  
 }
 
 # Lambda function that retrieves data from a 3rd-party API:
 module "lambda_function" {
-  function_name = substr("${local.unique_resource_namespace}-terraform-demo",0, 64)
+  function_name = substr("${local.unique_prefix_with_namespace}-terraform-demo",0, 64)
   source = "terraform-aws-modules/lambda/aws"
   description   = "Demo function created with Terraform via Release"
   handler       = "index.handler"
@@ -76,7 +78,7 @@ module "lambda_function" {
   source_path   = "./lambda"
   policy_path   = "/release/"
   role_path     = "/release/"
-  role_name = "${local.unique_resource_namespace}-lambda"
+  role_name = "${local.unique_prefix_with_namespace}-lambda"
   cloudwatch_logs_retention_in_days = 30
 }
 
@@ -95,7 +97,7 @@ output "lambda_function_arn" {
 # just an example of an alternate way of sharing ephemeral Terraform outputs outside of
 # your Release environment.
 resource "aws_ssm_parameter" "lambda_function_arn" {
-  name  = "/${local.unique_resource_namespace}/lambda_function_name"
+  name  = "/release/${local.unique_prefix}/lambda_function_name"
   type  = "String"
   value = module.lambda_function.lambda_function_arn
 }
