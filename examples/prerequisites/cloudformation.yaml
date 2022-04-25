@@ -115,6 +115,7 @@ Resources:
                 Action:
                 - ssm:DeleteParameter
                 - ssm:GetParameter
+                - ssm:GetParameters
                 - ssm:PutParameter
                 - ssm:ListTagsForResource
                 - ssm:AddTagsToResource
