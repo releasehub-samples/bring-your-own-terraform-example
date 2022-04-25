@@ -93,6 +93,10 @@ Resources:
                 Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/release-*"
               - Effect: Allow
                 Action:
+                - logs:DescribeLogGroups
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*"
+              - Effect: Allow
+                Action:
                 - ssm:DeleteParameter
                 - ssm:GetParameter
                 - ssm:PutParameter
