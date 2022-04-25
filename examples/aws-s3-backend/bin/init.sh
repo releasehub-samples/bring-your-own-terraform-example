@@ -20,8 +20,9 @@ export TF_IN_AUTOMATION=true
 export TERRAFORM_STATE_OBJECT_KEY="release/$TF_VAR_RELEASE_APP_NAME/$TF_VAR_RELEASE_BRANCH_NAME/$TF_VAR_RELEASE_ENV_ID/tfstate"
 
 # Set up our backend state file in S3: 
+TERRAFORM_STATE_BUCKET_NAME="$TERRAFORM_STATE_BUCKET_NAME_PREFIX-$ACCOUNT_ID"
 terraform init -migrate-state -force-copy \
     -backend-config="key=$TERRAFORM_STATE_OBJECT_KEY" \
-    -backend-config="bucket=$TERRAFORM_STATE_BUCKET_NAME_PREFIX" \
+    -backend-config="bucket=$TERRAFORM_STATE_BUCKET_NAME" \
     -backend-config="region=$TERRAFORM_STATE_BUCKET_REGION"
 
