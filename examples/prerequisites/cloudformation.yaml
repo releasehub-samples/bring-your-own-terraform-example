@@ -100,6 +100,7 @@ Resources:
                 - logs:ListTagsLogGroup
                 - logs:TagLogGroup
                 - logs:PutRetentionPolicy
+                - logs:UntagLogGroup
                 Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/release-*"
               
               - Effect: Allow
