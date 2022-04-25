@@ -57,6 +57,7 @@ Resources:
                 - iam:GetPolicyVersion
                 - iam:ListPolicyVersions
                 - iam:TagPolicy
+                - iam:UntagPolicy
                 Resource: !Sub "arn:aws:iam::${AWS::AccountId}:policy/release/*"
 
               - Effect: Allow
@@ -70,6 +71,7 @@ Resources:
                 - iam:ListInstanceProfilesForRole
                 - iam:ListRolePolicies
                 - iam:TagRole
+                - iam:UntagRole
                 Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/release/*"
                 
               - Effect: Allow
@@ -90,6 +92,7 @@ Resources:
                 - lambda:GetFunctionCodeSigningConfig
                 - lambda:ListVersionsByFunction
                 - lambda:TagResource
+                - lambda:UntagResource
                 Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:release-*"
 
               - Effect: Allow
@@ -99,8 +102,8 @@ Resources:
                 - logs:DescribeLogGroups
                 - logs:ListTagsLogGroup
                 - logs:TagLogGroup
-                - logs:PutRetentionPolicy
                 - logs:UntagLogGroup
+                - logs:PutRetentionPolicy
                 Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/release-*"
               
               - Effect: Allow
@@ -113,6 +116,9 @@ Resources:
                 - ssm:DeleteParameter
                 - ssm:GetParameter
                 - ssm:PutParameter
+                - ssm:ListTagsForResource
+                - ssm:AddTagsToResource
+                - ssm:RemoveTagsFromResource
                 Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/release/*"
               
               - Effect: Allow
