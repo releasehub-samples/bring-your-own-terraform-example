@@ -20,11 +20,10 @@ builds:
   context: examples/aws-s3-backend    # context = folder
   dockerfile: Dockerfile
 
-# "services" are those where you define which container images you will
-# later run as either a long-lived service (e.g. NodeJS frontend) or as 
-# a one-time job:
+# "services" are those where you define which container images you want
+# to run as either a long-lived service (e.g. NodeJS frontend) or as 
+# a one-time job.
 services:
-  # Uses the image we built above:
 - name: terraform
   image: releasehub-samples/release-with-terraform/terraform
   has_repo: true
@@ -47,11 +46,13 @@ resources:
     requests: 100Mi
   replicas: 1
 
-# You can use any service from above to define a"job", below:
+# Release jobs can derive their image from either a Release service with "from_services", 
+# or can reference an image directly. In our case, we'll re-use our service definition
+# above:
 jobs:
-- name: terraform-apply       # the job name doesn't matter, pick what you want
-  from_services: terraform    # name of service from above
-  command:                    # this is just overriding the entry point of your / our environment
+- name: terraform-apply
+  from_services: terraform 
+  command:                   
   - "./bin/apply.sh"   
   completed_timeout: 600       
 
@@ -72,10 +73,11 @@ workflows:
   parallelize:
   - step: deploy
     tasks:
-    - services.all
-    - jobs.terraform-apply
+    - services.terraform        # this runs an identical container to that used by the job below, with the only difference being this service's Dockerfile entrypoint is a sleep command that keeps it running. This is handy for opening a remote session to test or debug manually from within the context of your environment's namespace.
+    - jobs.terraform-apply 
 
-# Runs when commit is pushed to a repo, or if you disable auto-update on commit, when you trigger an update via UI & CLI
+# Runs when commit is pushed to a repo, or if you disable auto-update
+# on commit, when you trigger an update via UI & CLI
 - name: patch
   parallelize:
   - step: patch
