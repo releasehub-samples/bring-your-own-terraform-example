@@ -89,8 +89,8 @@ Resources:
                 - logs:DescribeLogGroups
                 - logs:ListTagsLogGroup
                 - logs:TagLogGroup
-                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:release-*"
-
+                - logs:PutRetentionPolicy
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/release-*"
               - Effect: Allow
                 Action:
                 - ssm:DeleteParameter

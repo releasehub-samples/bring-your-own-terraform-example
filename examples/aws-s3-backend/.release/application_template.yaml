@@ -52,12 +52,14 @@ jobs:
 - name: terraform-apply       # the job name doesn't matter, pick what you want
   from_services: terraform    # name of service from above
   command:                    # this is just overriding the entry point of your / our environment
-  - "./bin/apply.sh"          
+  - "./bin/apply.sh"   
+  completed_timeout: 600       
 
 - name: terraform-destroy
   from_services: terraform
   command:
   - "./bin/destroy.sh"
+  completed_timeout: 600
 
 
 # Above, we define our environment components. 
