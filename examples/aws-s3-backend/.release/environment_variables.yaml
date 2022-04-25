@@ -9,12 +9,12 @@ defaults:
 # as part of the prerequisite steps to follow before creating this app in Release.
 # Note - if you create a role,it must have a path prefix of /release/, as in 
 # "/release/MY_ROLE_123". 
-- key: TF_VAR_DEPLOYMENT_ROLE_NAME     
+- key: TERRAFORM_DEPLOYMENT_ROLE_NAME     
   value: "release/demo_role_for_terraform_job"
 
 # This should be the prefix of the bucket to hold your Terraform state that defined in 
 # examples/prerequisites/cloudformation.yaml.
-- key: TF_STATE_BUCKET_NAME_PREFIX
+- key: TERRAFORM_STATE_BUCKET_NAME_PREFIX
   value: release-demo-of-terraform
 
 # AWS region of the bucket Terraform will use to store state
