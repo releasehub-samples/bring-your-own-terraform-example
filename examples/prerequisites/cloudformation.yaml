@@ -100,7 +100,11 @@ Resources:
               
               - Effect: Allow
                 Action:
+                - s3:ListBucket
+                - s3:GetBucketLocation
                 - s3:ListObjects
                 - s3:GetObject
                 - s3:PutObject
-                Resource: !Sub "${EphemeralTerraformStateBucket.Arn}/*"
+                Resource: 
+                  - !Sub "${EphemeralTerraformStateBucket.Arn}/*"
+                  - !Sub "${EphemeralTerraformStateBucket.Arn}"

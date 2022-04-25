@@ -34,5 +34,5 @@ terraform init -migrate-state -force-copy \
     -backend-config="bucket=$TERRAFORM_STATE_BUCKET_NAME" \
     -backend-config="region=$TERRAFORM_STATE_BUCKET_REGION"
 
-[TERRAFORM INIT COMPLETE]
+echo [TERRAFORM INIT COMPLETE]
 
