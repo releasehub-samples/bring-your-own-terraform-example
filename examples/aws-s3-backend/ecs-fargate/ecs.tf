@@ -1,17 +1,17 @@
 ### Variables for this particular example: 
 variable "ECS_VPC_ID" {
   description = "Preexisting VPC to use for ECS"
-  type = "String"
+  type = string
 }
 
 variable "PRIVATE_SUBNET_1" {
   description = "Preexisting private subnet (1 of 2) to use for ECS"
-  type = "String"
+  type = string
 }
 
 variable "PRIVATE_SUBNET_2" {
   description = "Preexisting private subnet (2 of 2) to use for ECS"
-  type = "String"
+  type = string
 }
 
 ### ECS example adapted from the link below (refer to it or detail):
