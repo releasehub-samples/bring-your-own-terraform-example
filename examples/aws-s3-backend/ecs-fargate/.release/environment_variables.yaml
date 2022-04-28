@@ -1,0 +1,42 @@
+---
+defaults:
+# Which existing VPC and subnet to use for ECS Fargate service?
+- key: TF_VAR_VPC_ID
+  value: "vpc-08c07193f5f717b7c"
+
+- key: TF_VAR_PRIVATE_SUBNET_1
+  value: "subnet-0e817221b1a241039"
+
+- key: TF_VAR_PRIVATE_SUBNET_2
+  value: "subnet-07ef988d1228a94dd" 
+
+# AWS region that Terraform in which will create infrastructure
+- key: TF_VAR_AWS_DEFAULT_REGION
+  value: "us-west-2"
+
+# AWS Role that Terraform will assume to perform deployments.
+# This role is created when you run ./setup.sh in the root of this project repo
+# as part of the prerequisite steps to follow before creating this app in Release.
+# Note - if you create a role,it must have a path prefix of /release/, as in 
+# "/release/MY_ROLE_123". 
+- key: TERRAFORM_DEPLOYMENT_ROLE_NAME     
+  value: "release/demo_role_for_terraform_job"
+
+# This should be the prefix of the bucket to hold your Terraform state that defined in 
+# examples/prerequisites/cloudformation.yaml.
+- key: TERRAFORM_STATE_BUCKET_NAME_PREFIX
+  value: release-demo-of-terraform
+
+# AWS region of the bucket Terraform will use to store state
+- key: TERRAFORM_STATE_BUCKET_REGION
+  value: us-west-2
+
+mapping:
+  TF_VAR_RELEASE_ACCOUNT_ID: RELEASE_ACCOUNT_ID
+  TF_VAR_RELEASE_APP_NAME: RELEASE_APP_NAME
+  TF_VAR_RELEASE_ENV_ID: RELEASE_ENV_ID
+  TF_VAR_RELEASE_BRANCH_NAME: RELEASE_BRANCH_NAME
+  TF_VAR_RELEASE_COMMIT_SHORT: RELEASE_COMMIT_SHORT
+  TF_VAR_RELEASE_COMMIT_SHA: RELEASE_COMMIT_SHA
+  TF_VAR_RELEASE_ENV: RELEASE_ENV
+
