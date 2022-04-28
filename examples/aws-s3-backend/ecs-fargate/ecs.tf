@@ -41,8 +41,8 @@ module "ecs-fargate" {
   version = "~> 6.1.0"
 
   name_prefix        = "release-ecs-example"
-  vpc_id             = vars.VPC_ID
-  private_subnet_ids = [vars.PRIVATE_SUBNET_1, vars.PRIVATE_SUBNET_2]
+  vpc_id             = var.VPC_ID
+  private_subnet_ids = [var.PRIVATE_SUBNET_1, var.PRIVATE_SUBNET_2]
 
   cluster_id         = aws_ecs_cluster.cluster.id
 
