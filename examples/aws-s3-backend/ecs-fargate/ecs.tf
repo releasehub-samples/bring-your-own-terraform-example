@@ -75,15 +75,15 @@ module "ecs-fargate" {
 # need to run your other Terraform as a job within the same environment / App Template
 # so that the other job *also* has the same environment variables that tell it the 
 # proper environment ID to know where you're storing your state:
-output "lambda_function_arn" {
-  value = module.lambda_function.lambda_function_arn
+output "ecs_service_arn" {
+  value = module.ecs-fargate.service_arn
 }
 
 # We write our ephemeral Lambda's function name to AWS Parameter Store. This is
 # just an example of an alternate way of sharing ephemeral Terraform outputs outside of
 # your Release environment.
-resource "aws_ssm_parameter" "lambda_function_arn" {
-  name  = "/release/${local.unique_prefix}/lambda_function_name"
+resource "aws_ssm_parameter" "ecs_service_arn" {
+  name  = "/release/${local.unique_prefix}/ecs_service_arn"
   type  = "String"
-  value = module.lambda_function.lambda_function_arn
+  value = module.ecs-fargate.service_arn
 }
