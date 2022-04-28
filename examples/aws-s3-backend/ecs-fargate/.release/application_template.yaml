@@ -17,7 +17,7 @@ builds:
 # string in our services: "{source_org_name}/{source_repo_name}/{build_name}"
 # in other words: "releasehub-samples/release-with-terraform/terraform"
 - name: terraform                     # any name you want
-  context: examples/aws-s3-backend    # context = folder
+  context: examples/aws-s3-backend/ecs-fargate    # context = folder
   dockerfile: Dockerfile
 
 # "services" are those where you define which container images you want
