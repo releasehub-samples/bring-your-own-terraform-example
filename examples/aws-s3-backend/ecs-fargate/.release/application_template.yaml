@@ -4,7 +4,7 @@ context: YOUR_EKS_CLUSTER        # Update this field to match one of your Releas
 domain: YOUR_RELEASE_SUBDOMAIN   # Update to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
 auto_deploy: true
 repo_name: releasehub-samples/release-with-terraform   # Change this to match your forked repository
-tracking_branch: main
+tracking_branch: ecs    # TODO: change back to main once merged
 
 # Builds are where you are can optionally tell us to buily your Dockerfile(s)
 # and push the image artifact to AWS ECR or Google GCR. The name that you give
