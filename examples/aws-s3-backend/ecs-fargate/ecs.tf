@@ -1,5 +1,5 @@
 ### Variables for this particular example: 
-variable "ECS_VPC_ID" {
+variable "VPC_ID" {
   description = "Preexisting VPC to use for ECS"
   type = string
 }
