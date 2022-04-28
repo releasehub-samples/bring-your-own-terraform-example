@@ -26,12 +26,15 @@ If you would like to a full-featured trial of using Release in _your_ cloud acco
 
 ## Projects
 
-[Release Jobs](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) allow you to run arbitrary scripts during an environments setup, patch, and teardown flows of your Application Template's [Workflows](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) section. to create a "hello world" Lambda function to execute custom Terraform as part of an ephemeral Release environment's create, update, and teardown lifecycle workflows.
+[Release Jobs](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) allow you to run arbitrary scripts during an environments setup, patch, and teardown flows of your Application Template's [Workflows](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs). 
+
+The directories below contain example projects. You can fork this repo and select a project for deployment by editing [.release.yaml](.release.yaml). See [Deploying with Release](#deploying-with-release) for detail: 
+
 <!--
 // TODO: Finish the cloud backend
  * [examples/aws-cloud-backend](examples/aws-cloud-backend) - [work in process]
 -->
-* [examples/aws-s3-backend](examples/aws-s3-backend) - demo using S3 to store Terraform state files.
+* [examples/aws-s3-backend](examples/aws-s3-backend) - Examples which store your Terraform state in an S3 bucket in your account.  
 
 
 ## Deploying with Release
@@ -46,11 +49,11 @@ If you would like to a full-featured trial of using Release in _your_ cloud acco
     git checkout -b test_release
     ```
 
-1. Edit [.release.yaml] to point to the example directory of the project you want to test:
+1. Edit [.release.yaml] to point to the example directory of the project you want to test; for example: 
 
     ```yaml
-    application_template: examples/aws-s3-backend/.release/application_template.yaml
-    environment_variables: examples/aws-s3-backend/.release/environment_variables.yaml
+    application_template: examples/aws-s3-backend/lambda/.release/application_template.yaml
+    environment_variables: examples/aws-s3-backend/lambda/.release/environment_variables.yaml
     ```
 1. Within the `application_template.yaml` that you choose to deploy, edit the `repo_name` to match your forked repository:
 
@@ -63,7 +66,7 @@ If you would like to a full-featured trial of using Release in _your_ cloud acco
     release gitops validate
     ```
 
-### Architecture Deep Dive
+# Architecture Deep Dive
 
 This section provides a general overview of Release. Each project file includes comments to explain how things work.
 
