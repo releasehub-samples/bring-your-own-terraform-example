@@ -4,6 +4,19 @@ Description: |
   will assume to execute your Terraform configuration within your account. Also creates
   an S3 bucket to store state files for your project.
 
+# Within your ephemeral environment, your Teraform code will run under the context of
+# of the EC2 worker node IAM role of your Release EKS cluster. This role has a limited
+# permission set which won't be sufficient for Terraform. However, this role *does* have
+# the ability to assume IAM roles namespaced under a /release/ path.
+# 
+# So, in order for your Terraform job to create ephemeral resources (and read/write your
+# state files to Amazon S3), you will need to pre-create an IAM role, e.g. /release/terraform,
+# that has the needed IAM policies and a trust policy that allows the EKS worker node role
+# to assume it. 
+# 
+# This CloudFormation template creates an IAM role for Terraform as described above, along with
+# an S3 bucket to store state files for environments create as part of this demonstration. 
+
 Parameters:
   BucketNamePrefix: 
     Type: String
