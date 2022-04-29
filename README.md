@@ -21,7 +21,7 @@ If you would like to a full-featured trial of using Release in _your_ cloud acco
 
 1. Release-managed Kubernetes cluster (EKS, GKE, or AKS) that you created using Release. 
 
-1. [Optional] Release CLI([Release CLI](https://cli.releasehub.com/)).
+1. **Optional** [Release CLI](https://cli.releasehub.com/).
 
 
 ## Projects
