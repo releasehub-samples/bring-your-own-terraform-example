@@ -1,62 +1,60 @@
 # Extending Release Environments with Terraform
 
-[Release](https://releasehub.com/) allows you to quickly spin up full stack ephemeral and permanent environments in your public cloud account. As of April 2022, Release supports AWS and GCP, and in addition to the abstractions Release gives you for common environment components like container service, you can extend your environmenet by running any custom infrastructure-as-code (IaC) during an environment's create, update, and teardown workflows.
+[Release](https://releasehub.com/) allows you to quickly spin up full stack ephemeral and permanent environments in **your** cloud accounts.[Release Application Templates](https://docs.releasehub.com/reference-guide/application-settings/application-template) provide easy-to-use abstractions of cloud-native services to solve common environment needs, like the the ability to create an ephemeral RDS database cloned from a snapshot of your choice and attached to an environment with only two lines of YAML.
 
-This project shows you how to include any service offerred by your cloud provider and supported by Terraform as part of an ephemeral or permanent [Release environment]([Release](https://releasehub.com/)).
+[Release Jobs](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) also allow you to run any number of custom scripts as part of your environment's create, update, or teardown lifecycle. You define when and where such scripts run within the [Workflows](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) section of your Application Template. to create a "hello world" Lambda function to execute custom Terraform as part of an ephemeral Release environment's create, update, and teardown lifecycle workflows.
+
+In this project, we will show you how to extend your Release Environments with Terraform.
+
+
+## What about Pulumi, CloudFormation, CDK, and others?
+
+Release Jobs and Workflows can run any scripts or code that you can place in a Docker container. This means that you can adapt this project to support AWS CloudFormation, CDK, CloudFormation, Serverless Framework, Pulumi, and more. 
 
 
 # Getting Started
+
 
 ### Release Account Requirements
 
 Free-tier Release accounts may only launch up to two ephemeral environments in a Release-owned cloud account which does **not** include the ability to launch custom Terraform (or any other action that would require AWS or IAM privileges).
 
-If you would like to a full-featured trial of using Release in _your_ cloud account (including Terraform support), [please contact us here](https://releasehub.com). 
+If you would like to a full-featured trial of using Release in _your_ cloud account (including Terraform support), [please contact us, here](https://releasehub.com). 
+
 
 ## Prerequisites
 
-1. Release account connected to a [supported public cloud provider](https://docs.releasehub.com/integrations/integrations-overview).
+1. Release account connected to a [supported public cloud account](https://docs.releasehub.com/integrations/integrations-overview).
 
-1. Ability to create an AWS IAM role or a GCP service account in your cloud account.
+1. Previously-created Release Kubernetes cluster in the cloud account you want to use for deployment. 
 
-1. Release-managed Kubernetes cluster (EKS, GKE, or AKS) that you created using Release. 
+1. Ability to create a new user or role in your cloud account.
 
-1. **Optional** [Release CLI](https://cli.releasehub.com/).
+1. Create an AWS role or GCP service account for Terraform. See [Granting permission to Terraform](#granting_permission_to_terraform) for detail.
 
-
-## Projects
-
-[Release Jobs](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) allow you to run arbitrary scripts during an environments setup, patch, and teardown flows of your Application Template's [Workflows](https://docs.releasehub.com/reference-guide/application-settings/application-template/schema-definition#jobs) section. to create a "hello world" Lambda function to execute custom Terraform as part of an ephemeral Release environment's create, update, and teardown lifecycle workflows.
-<!--
-// TODO: Finish the cloud backend
- * [examples/aws-cloud-backend](examples/aws-cloud-backend) - [work in process]
--->
-* [examples/aws-s3-backend](examples/aws-s3-backend) - demo using S3 to store Terraform state files.
+1. **Optional** Install & configure the [Release CLI](https://cli.releasehub.com/).
 
 
-## Deploying with Release
+## Selecting a project branch to deploy
 
-1. Create an AWS IAM role (or GCP service account, etc.) with the permission(s) needed by Terraform to create your stack. Refer to [Granting permission to Terraform](#granting_permission_to_terraform) for detail.
+The `main` branch of this repository contains setup and deployment instructions. 
 
-1. Fork this repository
+Each other branch, like `aws-lambda` represents a standalone Terraform example you can deploy with Release.
 
-1. You can safely make changes to the `main` branch, though you can _optionally_ checkout a new branch, such as:
+The example branches are more or less identical apart from the Terraform resources created. 
 
-    ```sh
-    git checkout -b test_release
-    ```
 
-1. Edit [.release.yaml] to point to the example directory of the project you want to test:
+## Deployment
 
-    ```yaml
-    application_template: examples/aws-s3-backend/.release/application_template.yaml
-    environment_variables: examples/aws-s3-backend/.release/environment_variables.yaml
-    ```
-1. Within the `application_template.yaml` that you choose to deploy, edit the `repo_name` to match your forked repository:
+1. Fork this repository to your GitHub, BitBucket, or GitLab account.
+
+1. Within `./replease/application_template.yaml`, edit the `repo_name` to match your forked repository:
 
     ```yaml
     repo_name: <your_github_org_or_user>/release-with-terraform
     ```
+
+
 1. Optional - if using the [Release CLI](https://cli.releasehub.com/), you can lint your `.release.yaml` (and Application Template + Environment Variables) using the command below:
 
     ```sh
