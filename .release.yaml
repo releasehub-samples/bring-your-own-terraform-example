@@ -1,9 +1,11 @@
+# Below, we tell Release where to find our environment template and variables.
+application_template: .release/application_template.yaml
+environment_variables: .release/environment_variables.yaml
+
 # NOTE - By default, Release accounts do not have GitOps enabled, which means
 # that these files will only be used from your repisitory when you *first* 
 # create a new Release Application. After initial creation, you would need to
-# use the Release UI, CLI, or API to edit your template and environment variables
-# if GitOps is not enabled on your account. 
+# use the Release UI, CLI, or API to edit your application template and 
+# environment variables. 
 
-# Below, we tell Release where to find our environment template and variables.
-application_template: examples/aws-s3-backend/ecs-fargate/.release/application_template.yaml
-environment_variables: examples/aws-s3-backend/ecs-fargate/.release/environment_variables.yaml
+# You can enable GitOps by conacting your Release account team.
