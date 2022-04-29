@@ -1,5 +1,3 @@
-# Common variables across examples
-
 # Release-provided variables are injected automatically by Release into each
 # container and tell the containers about the context in which they exist.
 # These are useful for tagging resources, giving unique names to resources, 
