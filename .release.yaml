@@ -1,9 +1,12 @@
-# NOTE - By default, Release accounts do not have GitOps enabled, which means
-# that these files will only be used from your repisitory when you *first* 
-# create a new Release Application. After initial creation, you would need to
-# use the Release UI, CLI, or API to edit your template and environment variables
-# if GitOps is not enabled on your account. 
-
 # Below, we tell Release where to find our environment template and variables.
-application_template: examples/aws-s3-backend/.release/application_template.yaml
-environment_variables: examples/aws-s3-backend/.release/environment_variables.yaml
+application_template: .release/application_template.yaml
+environment_variables: .release/environment_variables.yaml
+
+# NOTE - By default, Release accounts do not have GitOps enabled, which means
+# that these files will only be used to generate the first v1 revision of your
+# application-level default blueprint. When GitOps is disabed, pushing subsequent
+# changes to the files above in your source control will *not* affect the default
+# template, nor will it change the any running environment's personal copy of the
+# default app-level template.
+#
+# You can enable GitOps by conacting your Release account team.

@@ -1,12 +1,4 @@
 FROM zenika/terraform-aws-cli:latest
-
-USER root
-RUN apt-get update
-RUN apt install -y build-essential
-RUN apt-get install --no-install-recommends -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-RUN . ~/.nvm/nvm.sh && nvm install node
-
 WORKDIR /app
 COPY . .
 
