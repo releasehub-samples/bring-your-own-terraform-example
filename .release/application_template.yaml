@@ -1,0 +1,114 @@
+# These fields will be added to the template stored in 
+# Release when you first create your application:
+#---
+#app:             name-of-your-release-app
+#context:         YOUR_EKS_CLUSTER
+#domain:          YOUR_RELEASE_SUBDOMAIN
+#repo_name:       your-repo             
+#tracking_branch: your-branch
+
+# If you disable auto_deploy, pushing commits will not update your
+# environment; you will instead need to use the Release CLI, API, 
+# or web console:
+auto_deploy: true
+
+# Environment Templates allow you to override most of the other top-level settings within this template,
+# based on whether an environment is permanent or ephemeral. For example, you may want to use a Redis
+# container for your ephemeral tests but prefer to use a static instance of Amazon ElastiCache for Redis 
+# created previously and outside of Release. We won't be using these templates in this example: 
+environment_templates:
+- name: ephemeral
+- name: permanent
+
+
+# Builds are an optional resource that tells Release to build an image for you
+# and push it to your cloud provider's container repository. You can later reference
+# this image in other sections of your template by using a literal string in the 
+# following format: "{source_org_name}/{source_repo_name}/{build_name}"
+builds:
+- name: terraform               # any name you want
+  context: terraform            # context = directory containing your Dockerfile, relative to root of repo
+  dockerfile: Dockerfile
+
+# Services are how you tell Release what container image(s) you will need for your 
+# environment. Defining a service below does *not* actually create a running service.
+# Instead, you will tell Release when to use these services by referencing them in
+# later template sections, like Workflows or Jobs.
+services:
+- name: terraform
+  image: releasehub-samples/release-with-terraform/terraform
+  has_repo: true                                                # indicates that the image comes from a Dockerfile in the builds section of this template.
+
+
+# Resources allow you to define CPU, memory, and the number of containers to run for any
+# services you instantiate in the Workflows section of this template. Note that these can 
+# be overridden on a per-service basis or within the environment_templates section above.
+# Other options, such as horizontally autoscaling the number of containers, are available
+# but not shown in this example: 
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+
+# Jobs allows you to define a one-time script to run as part of your environment's create, update, or
+# teardown lifecycle. Cron jobs for running environments are also supported, but not shown: 
+jobs:
+- name: terraform-apply
+  from_services: terraform 
+  command:                   
+  - "./bin/apply.sh"   
+  completed_timeout: 600       
+
+- name: terraform-destroy
+  from_services: terraform
+  command:
+  - "./bin/destroy.sh"
+  completed_timeout: 600
+
+
+# Workflows are how you tell Release how and when to create the services 
+# within your application. Workflows support container Services and Jobs, 
+# as well as Helm Charts, raw Kubernetes manifests, and more. 
+# https://docs.releasehub.com/reference-guide/workflows-in-release/
+
+# There are three required workflows: 
+#   setup:    when environment is first created 
+#   patch:    when environment is updated (either automatically from pushing a commit, or via web UI, API, or CLI)
+#   teardown: when environment is deleted via web UI, API, CLI, expiration, or PR merge (if created from a PR originally)
+
+workflows:
+- name: setup
+  parallelize:
+  - step: deploy
+    tasks:
+    - services.terraform        # See [Using a tools container]
+    - jobs.terraform-apply      # Execute terraform apply
+
+# [Using a tools container] above, we run a copy of our Terraform jobs container as a
+# standalone, long-running service. It's Dockerfile in the ./terraform/ directory has an
+# entry point of "sleep inifinity", which means the container normally does nothing.
+# However, having this container running and available means that *if* something causes
+# our job (jobs.terraform-apply) to fail and quit, we can use the Release web console or 
+# CLI to terminal into the long-running service container and - if needed - manually
+# try to debug from within our cloud environment. This is a convenient tool, but not
+# required. 
+
+# Path workflow runs by default when a commit is pushed to the tracking branch
+# of an environment. You can disable this if you want to manually control deployments
+# in the Release web console or use the Release API or CLI with your own orchestration logic. 
+- name: patch
+  parallelize:
+  - step: patch
+    tasks:
+    - services.terraform          
+    - jobs.terraform-apply
+
+# The teardown worflow must always be present and end with release.remove_environment.
+- name: teardown
+  order_from:
+  - jobs.terraform-destroy        # Don't forget to tear down your Terraform stack!
+  - release.remove_environment

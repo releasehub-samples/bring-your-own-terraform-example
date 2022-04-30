@@ -12,3 +12,9 @@ examples/aws-cloud-backend/*
 .DS_Store
 
 ignore-*
+
+# generated from test/test.py if testing locally
+local-vars-for-docker-run
+
+# user-specific setting of python version, if using pyenv-virtualenv
+.python-version

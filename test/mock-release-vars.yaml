@@ -1,0 +1,14 @@
+# These vars are meant to simulate the variables that Release automatically injects for you
+
+# Note! Depending on which service(s) and features you use in Release, you may need to edit
+# this file by adding or removing values:
+
+RELEASE_ACCOUNT_ID: 123456789
+RELEASE_APP_NAME: terraform-with-release
+RELEASE_BRANCH_NAME: ecs
+RELEASE_CLOUD_PROVIDER: aws
+RELEASE_CLUSTER_REGION: us-west-2
+RELEASE_COMMIT_SHA: ff512a17f83ef53e623d25a870287d0a221430cc
+RELEASE_COMMIT_SHORT: 0ad6025b
+RELEASE_ENV_ID: ted52db
+RELEASE_RANDOMNESS: ted52db
