@@ -1,17 +1,12 @@
-### Variables for this particular example: 
-variable "VPC_ID" {
-  description = "Preexisting VPC to use for ECS"
-  type = string
+data "aws_vpc" "default" {
+  default = true
 }
 
-variable "PRIVATE_SUBNET_1" {
-  description = "Preexisting private subnet (1 of 2) to use for ECS"
-  type = string
-}
-
-variable "PRIVATE_SUBNET_2" {
-  description = "Preexisting private subnet (2 of 2) to use for ECS"
-  type = string
+data "aws_subnets" "all" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 ### ECS example adapted from the link below (refer to it or detail):
@@ -41,9 +36,8 @@ module "ecs-fargate" {
   version = "~> 6.1.0"
 
   name_prefix        = "release-ecs-example"
-  vpc_id             = var.VPC_ID
-  private_subnet_ids = [var.PRIVATE_SUBNET_1, var.PRIVATE_SUBNET_2]
-
+  vpc_id             = data.aws_vpc.default.id
+  private_subnet_ids = data.aws_subnets.all.ids
   cluster_id         = aws_ecs_cluster.cluster.id
 
   task_container_image   = "marcincuber/2048-game:latest"
@@ -53,6 +47,8 @@ module "ecs-fargate" {
   task_container_port             = 80
   task_container_assign_public_ip = true
 
+  load_balanced =  true
+  
   target_groups = [
     {
       target_group_name = "release-ecs-demo-tg"
@@ -65,8 +61,6 @@ module "ecs-fargate" {
     path = "/"
   }
 }
-
-
 
 # Terraform's "terraform_remote_state" data source allows one Terraform configuration
 # to read the output of a remote state file. So, if you need to share state between

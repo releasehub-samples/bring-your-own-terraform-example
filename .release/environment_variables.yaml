@@ -1,15 +1,5 @@
 ---
 defaults:
-# Which existing VPC and subnet to use for ECS Fargate service?
-- key: TF_VAR_VPC_ID
-  value: "vpc-08c07193f5f717b7c"
-
-- key: TF_VAR_PRIVATE_SUBNET_1
-  value: "subnet-0e817221b1a241039"
-
-- key: TF_VAR_PRIVATE_SUBNET_2
-  value: "subnet-07ef988d1228a94dd" 
-
 # AWS region that Terraform in which will create infrastructure
 - key: TF_VAR_AWS_DEFAULT_REGION
   value: "us-west-2"

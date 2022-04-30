@@ -92,7 +92,6 @@ workflows:
 # try to debug from within our cloud environment. This is a convenient tool, but not
 # required. 
 
-
 # Path workflow runs by default when a commit is pushed to the tracking branch
 # of an environment. You can disable this if you want to manually control deployments
 # in the Release web console or use the Release API or CLI with your own orchestration logic. 
