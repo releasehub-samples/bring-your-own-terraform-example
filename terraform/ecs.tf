@@ -1,6 +1,24 @@
-### ECS example primarily from the link below:
+# This config creates an ECS cluster and Fargate service in the default VPC of the
+# region specified in your environment variables. It was more or less copied from
+# the examples in the module below: 
 # https://registry.terraform.io/modules/umotif-public/ecs-fargate/aws/latest
 
+###################################################################################
+# The two methods below are examples of how you could share the values of created
+# resources outside of the context of the container task that was used to create
+# your resources: 
+
+output "ecs_service_arn" {
+  value = module.ecs-fargate.service_arn
+}
+
+resource "aws_ssm_parameter" "ecs_service_arn" {
+  name  = "/release/${local.unique_prefix}/ecs_service_arn"
+  type  = "String"
+  value = module.ecs-fargate.service_arn
+}
+
+##################################################################################
 
 data "aws_vpc" "default" {
   default = true
@@ -108,24 +126,4 @@ module "ecs-fargate" {
     port = "traffic-port"
     path = "/"
   }
-}
-
-# Terraform's "terraform_remote_state" data source allows one Terraform configuration
-# to read the output of a remote state file. So, if you need to share state between
-# different containers within the same environment, one way of accomplishing this is
-# by writing outputs to state as shown below. To reference this value, you'll likely
-# need to run your other Terraform as a job within the same environment / App Template
-# so that the other job *also* has the same environment variables that tell it the 
-# proper environment ID to know where you're storing your state:
-output "ecs_service_arn" {
-  value = module.ecs-fargate.service_arn
-}
-
-# We write our ephemeral Lambda's function name to AWS Parameter Store. This is
-# just an example of an alternate way of sharing ephemeral Terraform outputs outside of
-# your Release environment.
-resource "aws_ssm_parameter" "ecs_service_arn" {
-  name  = "/release/${local.unique_prefix}/ecs_service_arn"
-  type  = "String"
-  value = module.ecs-fargate.service_arn
 }

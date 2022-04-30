@@ -36,13 +36,6 @@ variable "RELEASE_COMMIT_SHA" {
   type        = string
 }
 
-variable "RELEASE_ENV" {
-  description = "If any valu other than true, this environment was not created in Release (e.g. local testing)"
-  default = "true"
-  type        = string
-}
-
-# Used to determine which region that Terraform will launch into:
 variable "AWS_DEFAULT_REGION" {
   description = "AWS region in which we will launch infrastructure."
   type        = string

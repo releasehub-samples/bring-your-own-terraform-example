@@ -10,4 +10,10 @@ The `main` branch contains an overview of how this project works and required pr
 
 ## Deployment
 
-Refer to the `main` branch for deployment instructions. 
+Refer to the `main` branch for deployment instructions.
+
+## Terraform Lock File Management
+
+The `./terraform.lock.hcl` file can either be committed to your repo to maintain consistent module versions or it can be ignored to allow `terraform init` to pull the latest module versions with each run. 
+
+There are trade-offs with either approach, though this author personally prefers consistency and chooses to commit this file to source control.
