@@ -1,5 +1,1 @@
 Dockerfile
-.release/
-
-# By ignoring this file, we can check for its existence and, if it's not present, we can at least assume we are running 
-bin/local-vars.sh

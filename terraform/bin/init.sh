@@ -3,19 +3,15 @@ set -e
 
 echo "[BEGIN TERRAFORM INIT]"
 
-# If this value is not set, then we are not running in Release (or we haven't set our
-# local env vars to simulate running in Release) and we will load mock values:
-if [ -n $RELEASE_ACCOUNT_ID ]; then
-  DIR=$(dirname -- "$0")
-  source $DIR/local-vars.sh
-fi
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+echo "AWS Account ID = $AWS_ACCOUNT_ID"
 
-export ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-echo "AWS Account ID = $ACCOUNT_ID"
-
-export DEPLOYMENT_ROLE_ARN="arn:aws:iam::${ACCOUNT_ID}:role/${TERRAFORM_DEPLOYMENT_ROLE_NAME}"
+export DEPLOYMENT_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TERRAFORM_DEPLOYMENT_ROLE_NAME}"
 echo "Assuming role $DEPLOYMENT_ROLE_ARN..."
+
 # Assume the role needed to read/write backend state and deploy stuff with terraform:
+aws_account=$(aws sts get-caller-identity --query "Account" --output text)
+aws_role_arn="arn:aws:sts::234760159927:assumed-role/eksctl"
 aws_credentials=$(aws sts assume-role --role-arn "$DEPLOYMENT_ROLE_ARN" --role-session-name "release-$RELEASE_APP_NAME-$RELEASE_ENV_ID-terraform" --output json)
 export AWS_ACCESS_KEY_ID=$(echo $aws_credentials|jq -r '.Credentials.AccessKeyId')
 export AWS_SECRET_ACCESS_KEY=$(echo $aws_credentials|jq -r '.Credentials.SecretAccessKey')
@@ -31,7 +27,7 @@ export TF_IN_AUTOMATION=true
 export TERRAFORM_STATE_OBJECT_KEY="release/$RELEASE_APP_NAME/$RELEASE_BRANCH_NAME/$RELEASE_ENV_ID/tfstate"
 
 # Set up our backend state file in S3: 
-TERRAFORM_STATE_BUCKET_NAME="$TERRAFORM_STATE_BUCKET_NAME_PREFIX-$ACCOUNT_ID"
+TERRAFORM_STATE_BUCKET_NAME="$TERRAFORM_STATE_BUCKET_NAME_PREFIX-$AWS_ACCOUNT_ID"
 
 echo "Terraform state file will be kept at the following S3 bucket:"
 echo "s3://$TERRAFORM_STATE_BUCKET_NAME/$TERRAFORM_STATE_OBJECT_KEY ($TERRAFORM_STATE_BUCKET_REGION)"

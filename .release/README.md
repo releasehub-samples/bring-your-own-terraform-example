@@ -2,14 +2,6 @@
 
 This directory contains Release example Application Template & Environment Variable configuration files. 
 
-## GitOps Enabled
+**Note** - If you have not enabled Release's GitOps feature for your account, these files must be copy-pasted into your Release application's default settings.
 
-Release [GitOps](https://docs.releasehub.com/reference-guide/gitops) is an **opt-in** feature that allows you to store your Release [Application Template](https://docs.releasehub.com/reference-guide/application-settings/application-template) and [Environment Variables](https://docs.releasehub.com/reference-guide/application-settings/default-environment-variables) in your repository.
-
-**GitOps is not enabled by default**. 
-
-When GitOps is not enabled, please note that: 
-
-* When you **first** create a new Release Application (not the environment itself), Release **will** use your `.release.yaml` files, if present. 
-
-* Changes to your Application and Variable Templates pushed to your remote repo will **not** update remote environment state.
+If you **do** have Release GitOps enabled, you can use these files directly by adding `.release.yaml` to the root of this repository. Refer to Release documentation for detail. 

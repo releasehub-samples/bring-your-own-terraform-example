@@ -1,11 +1,16 @@
----
-#app: terraform-demo              # Update to match the name selected when creating your application
-#context: YOUR_EKS_CLUSTER        # Update this field to match one of your Release-managed EKS clusters
-#domain: YOUR_RELEASE_SUBDOMAIN   # Update to a domain or subdomain that you want to use as the root node for any DNS ingress endpoints you later define.
-auto_deploy: true
-#repo_name: releasehub-samples/release-with-terraform   # Change this to match your forked repository
-#tracking_branch: ecs    # TODO: change back to main once merged
+# These fields will be added to the template stored in 
+# Release when you first create your application:
+#---
+#app:             name-of-your-release-app
+#context:         YOUR_EKS_CLUSTER
+#domain:          YOUR_RELEASE_SUBDOMAIN
+#repo_name:       your-repo             
+#tracking_branch: your-branch
 
+# If you disable auto_deploy, pushing commits will not update your
+# environment; you will instead need to use the Release CLI, API, 
+# or web console:
+auto_deploy: true
 
 # Environment Templates allow you to override most of the other top-level settings within this template,
 # based on whether an environment is permanent or ephemeral. For example, you may want to use a Redis
