@@ -15,6 +15,9 @@ ignore-*
 
 # generated from test/test.py if testing locally
 local-vars-for-docker-run
+local-vars-without-docker
 
 # user-specific setting of python version, if using pyenv-virtualenv
 .python-version
+
+builds/
