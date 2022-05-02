@@ -64,8 +64,15 @@ for key in combined_vars:
     #env_var_string = key + "=\"" + str(combined_vars[key]) + "\"\n"
     env_var_string = key + "=" + str(combined_vars[key]) + "\n"
     f.write(env_var_string)
-
 f.close()
 
 with open(local_vars_file, 'r') as f:
     print(f.read())
+
+local_vars_file = f'{current_dir}/local-vars-without-docker'
+f = open(local_vars_file, 'w')
+for key in combined_vars: 
+    #env_var_string = key + "=\"" + str(combined_vars[key]) + "\"\n"
+    env_var_string = "export " + key + "=" + str(combined_vars[key]) + "\n"
+    f.write(env_var_string)
+f.close()

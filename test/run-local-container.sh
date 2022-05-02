@@ -35,5 +35,6 @@ docker run --rm -it --env-file $PATH_TO_LOCAL_ENV_VARS \
     -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
     -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
     -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \
-    --entrypoint bash $IMAGE_NAME
+    --entrypoint bash $IMAGE_NAME \
+    "$@"
 

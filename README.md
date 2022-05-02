@@ -14,9 +14,9 @@ The `main` branch contains an overview of how this project works and required pr
 
 Refer to the `main` branch for deployment instructions.
 
-### Run local container
+### Test locally as a container
 
-You can optionally run a local Docker container to mimick the way Release will run your Terraform container in a real environment. 
+You can run a local Docker container to mimick the way Release will run your Terraform container in a real environment. 
 
 1. Complete any prerequisites on described on the `main` branch of this repo. 
 
@@ -24,12 +24,12 @@ You can optionally run a local Docker container to mimick the way Release will r
 
 1. Install Python dependencies: 
 
-    ```
+    ```sh
     cd test/
     pip install -r requirements.txt
     ```
 
-1. Optionally, update / edit the values in `./release/environment_variables.yaml` as needed for your tests.
+1. Optionally, update the values in `./release/environment_variables.yaml` as needed for your tests.
 
 1. From within your AWS account, navigate to either the EKS or IAM web console and find the IAM role used by worker nodes in your cluster. Make note of the role's name, which will follow a pattern like this: 
 
@@ -49,11 +49,7 @@ You can optionally run a local Docker container to mimick the way Release will r
     ./bin/run-local-container.sh
     ```
 
-    This will run a python script to generate an environment variables file containing the values you've defined in `.release/environment_variables.yaml`, along with a number of `RELEASE_` variables to mimick the values that Release would normally inject for you.
-
-    It will also use `docker run` with your newly-built image to open a bash shell within an instance of your container. 
-
-    From there, you can test your Terraform, e.g.:
+    This will build and run a docker container from your /terraform directory that simulates running your container in a Release-managed EKS cluster in your account: From there, you can test your Terraform:
 
     ```sh
     ./bin/apply.sh
